@@ -5,9 +5,9 @@ import re
 from collections import Counter
 
 @st.cache(suppress_st_warning=True, show_spinner=False)
-def get_topic_counts(corpus = None):
+def get_topic_counts(corpus = None, column='subjects'):
     emneord =  Counter([x.strip() 
-                        for y in corpus.subjects.values 
+                        for y in corpus[column].values 
                         for x in set(y.split('/')) 
                         if isinstance(y, str)])
     
@@ -15,7 +15,7 @@ def get_topic_counts(corpus = None):
     return emner
 
 st.set_page_config(
-    page_title="Emneord", 
+    page_title="Metadata", 
     page_icon=None, 
     layout="wide",
     initial_sidebar_state="auto", 
@@ -45,39 +45,45 @@ if uploaded_file is not None:
 
     corpus = dh.Corpus(doctype='digibok',limit=0)
     corpus.extend_from_identifiers(list(dataframe.urn))
+    corpusdf = corpus.corpus.fillna("")
 
-# if corpus_defined:
-#     st.sidebar.subheader('Korpus')
-#     st.sidebar.write("Viser et lite utvalg på inntil tyve tekster fra korpuset")
-#     st.session_state['corpus'] = corpus
-#     corpus.corpus.dhlabid = corpus.corpus.dhlabid.astype(int)
-#     corpus.corpus.year = corpus.corpus.year.astype(int)
-#     st.sidebar.write(corpus.corpus.sample(min(len(corpus.corpus), 20))["title authors year".split()])
-
-    
-
-
-st.header('Inspiser emneord')
-
-col1, col2 = st.columns(2)
-with col1:
-    types = st.selectbox("Vis emneord som starter med:", ['hva som helst', 'stor bokstav', 'liten bokstav'])
-with col2:
-    st.write("Relativ frekvens")
-    percent = st.checkbox("Vis % ", value = False)
+st.header('Inspiser metadata')
 
 if corpus_defined:
-    #st.write(corpus_defined, len(corpus.corpus))
-    corpusdf = corpus.corpus[~corpus.corpus.subjects.isnull()]
-    emner = get_topic_counts(corpusdf)
-    if types == "stor bokstav":
-        df = emner[emner.index.str.istitle()]
-    elif type == "liten bokstav":
-        df = emner[emner.index.str.islower()]
-    else:
-        df = emner
-    
+    col1, col2 = st.columns(2)
+    with col1:
+        gruppering = st.selectbox(
+                    'Velg grupperingskolonne', 
+                    options = [x for x in corpusdf.columns 
+                               if x not in "urn dhlabid isbn isbn10 sesamid oaiid".split()]
+        )
+
+    with col2:
+        st.write("Relativ frekvens")
+        percent = st.checkbox("Vis % ", value = False)
+
+    df = get_topic_counts(corpusdf, gruppering)
     if percent == True:
-        df = (df*100/df.sum()).style.format(precision=1)
+        df = (df*100/df.sum())
     
-    st.write(df)
+    colA, colB = st.columns(2)
+    
+    with colA:
+        st.write(f"### Opptelling av {gruppering}")
+        if percent == True:
+            st.write(df.style.format(precision=2))
+        else:
+            st.write(df)
+    
+    with colB:
+        st.write(f"### Totaler for korpuset")
+        if percent == True:
+            st.write(f"Sum over alle elementer i {gruppering} blir {int(df[df.index != ''].sum())} %, av totalt  {int(df.sum())} inkludert blanke {gruppering}.")
+        else:
+            st.write(f"Sum over alle elementer i {gruppering} blir {int(df[df.index != ''].sum())}, av totalt  {int(df.sum())} inkludert blanke {gruppering}.")
+        st.write(f"Antall {gruppering} er {len(df)}.")
+        st.write(f"Korpusstørrelsen er {len(corpusdf)}.")
+         
+else:
+    st.write(' -- venter på korpus --')
+            
