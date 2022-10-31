@@ -69,7 +69,7 @@ if corpus_defined:
     colA, colB = st.columns(2)
     
     with colA:
-        st.write(f"### Opptelling av {gruppering}")
+        st.write(f"### Opptelling av _{gruppering}_")
         if percent == True:
             st.write(df.style.format(precision=2))
         else:
@@ -78,10 +78,10 @@ if corpus_defined:
     with colB:
         st.write(f"### Totaler for korpuset")
         if percent == True:
-            st.write(f"Sum over alle elementer i {gruppering} blir {int(df[df.index != ''].sum())} %, av totalt  {int(df.sum())} inkludert blanke {gruppering}.")
+            st.write(f"Sum over alle elementer i _{gruppering}_ blir {int(df[df.index != ''].sum())} %, av totalt  {int(df.sum())} inkludert blanke _{gruppering}_.")
         else:
-            st.write(f"Sum over alle elementer i {gruppering} blir {int(df[df.index != ''].sum())}, av totalt  {int(df.sum())} inkludert blanke {gruppering}.")
-        st.write(f"Antall {gruppering} er {len(df)}.")
+            st.write(f"Sum over alle elementer i _{gruppering}_ blir {int(df[df.index != ''].sum())}, av totalt  {int(df.sum())} inkludert blanke _{gruppering}_.")
+        st.write(f"Antall _{gruppering}_ er {len(df)}.")
         st.write(f"Korpusstørrelsen er {len(corpusdf)}.")
          
 else:
