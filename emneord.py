@@ -6,10 +6,13 @@ from collections import Counter
 
 @st.cache(suppress_st_warning=True, show_spinner=False)
 def get_topic_counts(corpus = None, column='subjects'):
-    emneord =  Counter([x.strip() 
+    try:
+        emneord =  Counter([x.strip() 
                         for y in corpus[column].values 
                         for x in set(y.split('/')) 
                         if isinstance(y, str)])
+    except AttributeError:
+        emneord =  Counter([y for y in corpus[column].values])
     
     emner = pd.DataFrame.from_dict(emneord, orient='index', columns=["frekvens"]).sort_values(by = 'frekvens', ascending=False)
     return emner
@@ -46,6 +49,8 @@ if uploaded_file is not None:
     corpus = dh.Corpus(doctype='digibok',limit=0)
     corpus.extend_from_identifiers(list(dataframe.urn))
     corpusdf = corpus.corpus.fillna("")
+    corpusdf.year = pd.to_datetime(corpusdf.year.map(lambda x:str(int(x))), infer_datetime_format=True)
+    corpusdf.timestamp = pd.to_datetime(corpusdf.timestamp.map(lambda x:str(int(x))), infer_datetime_format=True)
 
 st.header('Inspiser metadata')
 
