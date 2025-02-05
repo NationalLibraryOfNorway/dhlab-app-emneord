@@ -48,13 +48,14 @@ if uploaded_file is not None:
 
     corpus = dh.Corpus(doctype='digibok',limit=0)
     corpus.extend_from_identifiers(list(dataframe.urn))
-    corpusdf = corpus.corpus.fillna("")
-    corpusdf.year = pd.to_datetime(corpusdf.year.map(lambda x:str(int(x))), infer_datetime_format=True)
-    corpusdf.timestamp = pd.to_datetime(corpusdf.timestamp.map(lambda x:str(int(x))), infer_datetime_format=True)
 
 st.header('Inspiser metadata')
 
 if corpus_defined:
+    corpusdf = corpus.corpus.fillna("")
+    corpusdf.year = pd.to_datetime(corpusdf.year.map(lambda x:str(int(x))), infer_datetime_format=True)
+    corpusdf.timestamp = pd.to_datetime(corpusdf.timestamp.map(lambda x:str(int(x))), infer_datetime_format=True)
+
     col1, col2 = st.columns(2)
     with col1:
         gruppering = st.selectbox(
@@ -91,4 +92,4 @@ if corpus_defined:
          
 else:
     st.write(' -- venter på korpus --')
-            
+
