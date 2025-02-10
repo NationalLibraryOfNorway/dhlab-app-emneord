@@ -4,6 +4,8 @@ import pandas as pd
 import re
 from collections import Counter
 
+COL_FREQ = "frekvens"
+
 @st.cache_data(show_spinner=False)
 def get_topic_counts(corpus, column='subjects'):
     try:
@@ -14,13 +16,13 @@ def get_topic_counts(corpus, column='subjects'):
     except AttributeError:
         emneord =  Counter([y for y in corpus[column].values])
 
-    emner = pd.DataFrame.from_dict(emneord, orient='index', columns=["frekvens"]).sort_values(by = 'frekvens', ascending=False)
+    emner = pd.DataFrame.from_dict(emneord, orient='index', columns=[COL_FREQ]).sort_values(by = COL_FREQ, ascending=False)
     return emner
 
 def process_corpus(corpus: dh.Corpus):
     corpusdf = corpus.corpus.fillna("")
-    corpusdf.year = pd.to_datetime(corpusdf.year.map(lambda x:str(int(x))), infer_datetime_format=True)
-    corpusdf.timestamp = pd.to_datetime(corpusdf.timestamp.map(lambda x:str(int(x))), infer_datetime_format=True)
+    corpusdf.year = pd.to_datetime(corpusdf.year.map(lambda x:str(int(x))))
+    corpusdf.timestamp = pd.to_datetime(corpusdf.timestamp.map(lambda x:str(int(x))))
 
     col1, col2 = st.columns(2)
     with col1:
@@ -50,10 +52,12 @@ def process_corpus(corpus: dh.Corpus):
 
     with colB:
         st.write(f"### Totaler for korpuset")
+        sum_group = df[df.index != ''][COL_FREQ].sum()
+        sum_total = df[COL_FREQ].sum()
         if percent == True:
-            st.write(f"Sum over alle elementer i _{gruppering}_ blir {int(df[df.index != ''].sum())} %, av totalt  {int(df.sum())} inkludert blanke _{gruppering}_.")
+            st.write(f"Sum over alle elementer i _{gruppering}_ blir {sum_group} %, av totalt  {sum_total} inkludert blanke _{gruppering}_.")
         else:
-            st.write(f"Sum over alle elementer i _{gruppering}_ blir {int(df[df.index != ''].sum())}, av totalt  {int(df.sum())} inkludert blanke _{gruppering}_.")
+            st.write(f"Sum over alle elementer i _{gruppering}_ blir {sum_group}, av totalt  {sum_total} inkludert blanke _{gruppering}_.")
         st.write(f"Antall _{gruppering}_ er {len(df)}.")
         st.write(f"Korpusstørrelsen er {len(corpusdf)}.")
 
