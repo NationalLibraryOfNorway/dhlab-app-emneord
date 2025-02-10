@@ -4,7 +4,7 @@ import pandas as pd
 import re
 from collections import Counter
 
-@st.cache(suppress_st_warning=True, show_spinner=False)
+@st.cache_data(show_spinner=False)
 def get_topic_counts(corpus, column='subjects'):
     try:
         emneord =  Counter([x.strip() 
