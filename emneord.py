@@ -5,7 +5,7 @@ import re
 from collections import Counter
 
 @st.cache(suppress_st_warning=True, show_spinner=False)
-def get_topic_counts(corpus = None, column='subjects'):
+def get_topic_counts(corpus, column='subjects'):
     try:
         emneord =  Counter([x.strip() 
                         for y in corpus[column].values 
