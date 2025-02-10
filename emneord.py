@@ -32,7 +32,7 @@ st.sidebar.markdown("Velg et korpus fra [corpus-appen](https://beta.nb.no/dhlab/
 corpus_defined = False
 urner = st.sidebar.text_area("Lim inn URNer:","", help="Lim en tekst som har URNer i seg. Teksten trenger ikke å være formatert")
 if urner != "":
-    urns = re.findall("URN:NBN[^\s.,]+", urner)
+    urns = re.findall(r"URN:NBN[^\s.,]+", urner)
     if urns != []:
         corpus_defined = True
         corpus = dh.Corpus(doctype='digibok',limit=0)
