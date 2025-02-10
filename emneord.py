@@ -63,6 +63,7 @@ if corpus_defined:
                     options = [x for x in corpusdf.columns 
                                if x not in "urn dhlabid isbn isbn10 sesamid oaiid".split()]
         )
+        assert isinstance(gruppering, str)
 
     with col2:
         st.write("Relativ frekvens")
