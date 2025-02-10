@@ -13,7 +13,7 @@ def get_topic_counts(corpus, column='subjects'):
                         if isinstance(y, str)])
     except AttributeError:
         emneord =  Counter([y for y in corpus[column].values])
-    
+
     emner = pd.DataFrame.from_dict(emneord, orient='index', columns=["frekvens"]).sort_values(by = 'frekvens', ascending=False)
     return emner
 
@@ -37,7 +37,6 @@ if urner != "":
         corpus_defined = True
         corpus = dh.Corpus(doctype='digibok',limit=0)
         corpus.extend_from_identifiers(urns)
-        #st.write(urns)
     else:
         st.write('Fant ingen URNer')
 
