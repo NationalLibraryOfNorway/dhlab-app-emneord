@@ -1,4 +1,4 @@
-FROM python:3.12
+FROM python:3.12-slim-bookworm
         ENV PORT=8501
         EXPOSE $PORT
         WORKDIR /emneord.py
