@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 import re
 from collections import Counter
 
@@ -7,6 +6,7 @@ COL_FREQ = "frekvens"
 
 @st.cache_data(show_spinner=False)
 def get_topic_counts(corpus, column='subjects'):
+    import pandas as pd
     try:
         emneord =  Counter([x.strip() 
                         for y in corpus[column].values 
@@ -19,6 +19,7 @@ def get_topic_counts(corpus, column='subjects'):
     return emner
 
 def process_corpus(corpus):
+    import pandas as pd
     corpusdf = corpus.corpus.fillna("")
     corpusdf.year = pd.to_datetime(corpusdf.year.map(lambda x:str(int(x))), format="mixed")
     corpusdf.timestamp = pd.to_datetime(corpusdf.timestamp.map(lambda x:str(int(x))), format="mixed")
@@ -61,6 +62,7 @@ def process_corpus(corpus):
         st.write(f"Korpusstørrelsen er {len(corpusdf)}.")
 
 def get_corpus(urner="", file=None):
+    import pandas as pd
     corpus = None
 
     if file is not None:
@@ -101,5 +103,6 @@ corpus = get_corpus(urner, uploaded_file)
 if corpus is None:
     st.write(' -- venter på korpus --')
     import dhlab as _
+    import pandas as _
 else:
     process_corpus(corpus)
