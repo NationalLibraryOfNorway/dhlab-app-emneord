@@ -3,7 +3,7 @@ FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
         EXPOSE $PORT
         WORKDIR /emneord.py
         COPY requirements.txt ./requirements.txt
-        RUN uv pip install --system -r requirements.txt
+        RUN uv pip install --system --compile-bytecode --only-binary=:all: --no-binary=python-louvain -r requirements.txt
         COPY . .
         CMD streamlit run emneord.py --server.port ${PORT} --server.baseUrlPath /emneord-test-fast
 
