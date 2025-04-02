@@ -66,15 +66,15 @@ def get_corpus(urner="", file=None):
     corpus = None
 
     if file is not None:
-        import dhlab as dh
+        from dhlab.text import Corpus
         dataframe = pd.read_excel(file)
-        corpus = dh.Corpus(doctype='digibok',limit=0)
+        corpus = Corpus(doctype='digibok',limit=0)
         corpus.extend_from_identifiers(list(dataframe.urn))
     elif urner != "":
-        import dhlab as dh
+        from dhlab.text import Corpus
         urns = re.findall(r"URN:NBN[^\s.,]+", urner)
         if urns != []:
-            corpus = dh.Corpus(doctype='digibok',limit=0)
+            corpus = Corpus(doctype='digibok',limit=0)
             corpus.extend_from_identifiers(urns)
         else:
             st.write('Fant ingen URNer')
@@ -102,7 +102,7 @@ corpus = get_corpus(urner, uploaded_file)
 
 if corpus is None:
     st.write(' -- venter på korpus --')
-    import dhlab as _
+    import dhlab.text as _
     import pandas as _
 else:
     process_corpus(corpus)
