@@ -9,7 +9,7 @@ FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
         COPY ./emneord.py .
 
         # Warm up caches
-        RUN timeout 5s streamlit emneord.py; exit 0
+        RUN timeout 5s streamlit run emneord.py; exit 0
         RUN python -c 'import dhlab, pandas'
 
         CMD streamlit run emneord.py \
