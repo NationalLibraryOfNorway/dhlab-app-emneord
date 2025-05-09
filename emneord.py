@@ -1,6 +1,4 @@
-import dhlab as dh
 import streamlit as st
-import pandas as pd
 import re
 from collections import Counter
 
@@ -8,6 +6,7 @@ COL_FREQ = "frekvens"
 
 @st.cache_data(show_spinner=False)
 def get_topic_counts(corpus, column='subjects'):
+    import pandas as pd
     try:
         emneord =  Counter([x.strip() 
                         for y in corpus[column].values 
@@ -19,10 +18,11 @@ def get_topic_counts(corpus, column='subjects'):
     emner = pd.DataFrame.from_dict(emneord, orient='index', columns=[COL_FREQ]).sort_values(by = COL_FREQ, ascending=False)
     return emner
 
-def process_corpus(corpus: dh.Corpus):
+def process_corpus(corpus):
+    import pandas as pd
     corpusdf = corpus.corpus.fillna("")
-    corpusdf.year = pd.to_datetime(corpusdf.year.map(lambda x:str(int(x))))
-    corpusdf.timestamp = pd.to_datetime(corpusdf.timestamp.map(lambda x:str(int(x))))
+    corpusdf.year = pd.to_datetime(corpusdf.year.map(lambda x:str(int(x))), format="mixed")
+    corpusdf.timestamp = pd.to_datetime(corpusdf.timestamp.map(lambda x:str(int(x))), format="mixed")
 
     col1, col2 = st.columns(2)
     with col1:
@@ -61,6 +61,26 @@ def process_corpus(corpus: dh.Corpus):
         st.write(f"Antall _{gruppering}_ er {len(df)}.")
         st.write(f"Korpusstørrelsen er {len(corpusdf)}.")
 
+def get_corpus(urner="", file=None):
+    import pandas as pd
+    corpus = None
+
+    if file is not None:
+        import dhlab as dh
+        dataframe = pd.read_excel(file)
+        corpus = dh.Corpus(doctype='digibok',limit=0)
+        corpus.extend_from_identifiers(list(dataframe.urn))
+    elif urner != "":
+        import dhlab as dh
+        urns = re.findall(r"URN:NBN[^\s.,]+", urner)
+        if urns != []:
+            corpus = dh.Corpus(doctype='digibok',limit=0)
+            corpus.extend_from_identifiers(urns)
+        else:
+            st.write('Fant ingen URNer')
+
+    return corpus
+
 
 st.set_page_config(
     page_title="Metadata",
@@ -73,27 +93,16 @@ st.set_page_config(
 st.sidebar.markdown("Velg et korpus fra [corpus-appen](https://beta.nb.no/dhlab/corpus/)" 
                     " eller hent en eller flere URNer fra nb.no eller andre steder")
 
-
-corpus = None
-
 urner = st.sidebar.text_area("Lim inn URNer:","", help="Lim en tekst som har URNer i seg. Teksten trenger ikke å være formatert")
-if urner != "":
-    urns = re.findall(r"URN:NBN[^\s.,]+", urner)
-    if urns != []:
-        corpus = dh.Corpus(doctype='digibok',limit=0)
-        corpus.extend_from_identifiers(urns)
-    else:
-        st.write('Fant ingen URNer')
-
 uploaded_file = st.sidebar.file_uploader("Last opp et korpus", help="Dra en fil over hit, fra et nedlastningsikon, eller velg fra en mappe")
-if uploaded_file is not None:
-    dataframe = pd.read_excel(uploaded_file)
-    corpus = dh.Corpus(doctype='digibok',limit=0)
-    corpus.extend_from_identifiers(list(dataframe.urn))
 
 st.header('Inspiser metadata')
 
+corpus = get_corpus(urner, uploaded_file)
+
 if corpus is None:
     st.write(' -- venter på korpus --')
+    import dhlab as _
+    import pandas as _
 else:
     process_corpus(corpus)
