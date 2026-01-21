@@ -21,8 +21,8 @@ def get_topic_counts(corpus, column='subjects'):
 
 def process_corpus(corpus: dh.Corpus):
     corpusdf = corpus.corpus.fillna("")
-    corpusdf.year = pd.to_datetime(corpusdf.year.map(lambda x:str(int(x))))
-    corpusdf.timestamp = pd.to_datetime(corpusdf.timestamp.map(lambda x:str(int(x))))
+    corpusdf.year = corpusdf.year.astype(int) #pd.to_datetime(corpusdf.year.map(lambda x:str(int(x))))
+    # corpusdf.timestamp = pd.to_datetime(corpusdf.timestamp.map(lambda x:str(int(x))))
 
     col1, col2 = st.columns(2)
     with col1:
@@ -70,7 +70,7 @@ st.set_page_config(
     menu_items=None
 )
 
-st.sidebar.markdown("Velg et korpus fra [corpus-appen](https://beta.nb.no/dhlab/corpus/)" 
+st.sidebar.markdown("Velg et korpus fra [corpus-appen](https://dh.nb.no/run/corpus-webapp/app/)" 
                     " eller hent en eller flere URNer fra nb.no eller andre steder")
 
 
