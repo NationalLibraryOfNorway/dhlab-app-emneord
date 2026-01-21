@@ -70,7 +70,7 @@ st.set_page_config(
     menu_items=None
 )
 
-st.sidebar.markdown("Velg et korpus fra [corpus-appen](https://beta.nb.no/dhlab/corpus/)" 
+st.sidebar.markdown("Velg et korpus fra [korpus-appen](https://dh.nb.no/run/corpus-webapp/app/)" 
                     " eller hent en eller flere URNer fra nb.no eller andre steder")
 
 
